@@ -1,4 +1,4 @@
-package com.ll.medium.domain.user;
+package com.ll.medium.domain.member;
 
 
 import jakarta.persistence.Column;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class UserEntity {
+public class MemberEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

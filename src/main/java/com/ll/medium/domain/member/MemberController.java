@@ -1,4 +1,4 @@
-package com.ll.medium.domain.user;
+package com.ll.medium.domain.member;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,41 +11,46 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/member")
+public class MemberController {
 
-    private final UserService userService;
+    private final MemberService memberService;
 
-    @GetMapping("/signup")
-    public String signup(UserCreateForm userCreateForm) {
-        return "signup_form";
+    @GetMapping("/join")
+    public String join(MemberCreateForm memberCreateForm) {
+        return "join_form";
     }
 
-    @PostMapping("/signup")
-    public String signup(@Valid UserCreateForm userCreateForm, BindingResult bindingResult) {
+    @PostMapping("/join")
+    public String join(@Valid MemberCreateForm memberCreateForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "signup_form";
+            return "join_form";
         }
 
-        if (!userCreateForm.getPassword().equals(userCreateForm.getPasswordConfirm())) {
+        if (!memberCreateForm.getPassword().equals(memberCreateForm.getPasswordConfirm())) {
             bindingResult.rejectValue("passwordConfirm", "passwordInCorrect",
                     "2개의 패스워드가 일치하지 않습니다.");
-            return "signup_form";
+            return "join_form";
         }
 
         try {
-            userService.create(userCreateForm.getUsername(),
-                     userCreateForm.getPassword());
+            memberService.create(memberCreateForm.getUsername(),
+                     memberCreateForm.getPassword());
         }catch(DataIntegrityViolationException e) {
             e.printStackTrace();
             bindingResult.reject("signupFailed", "이미 등록된 사용자입니다.");
-            return "signup_form";
+            return "join_form";
         }catch(Exception e) {
             e.printStackTrace();
             bindingResult.reject("signupFailed", e.getMessage());
-            return "signup_form";
+            return "join_form";
         }
 
         return "redirect:/";
+    }
+
+    @GetMapping("/login")
+    public String login() {
+        return "login_form";
     }
 }
