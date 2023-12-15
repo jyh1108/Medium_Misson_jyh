@@ -77,16 +77,7 @@ public class CommentController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
         this.commentService.modify(comment, commentForm.getContent());
-        return String.format("redirect:/question/detail/%s", comment.getWriting().getId());
+        return String.format("redirect:/writing/detail/%s", comment.getWriting().getId());
     }
 
-//    @PreAuthorize("isAuthenticated()")
-//    @GetMapping("/vote/{id}")
-//    public String answerVote(Principal principal, @PathVariable("id") Integer id) {
-//        Answer answer = this.answerService.getAnswer(id);
-//        SiteUser siteUser = this.userService.getUser(principal.getName());
-//        this.answerService.vote(answer, siteUser);
-//        return String.format("redirect:/question/detail/%s#answer_%s",
-//                answer.getQuestion().getId(), answer.getId());
-//    }
 }

@@ -17,7 +17,7 @@
         </thead>
         <tbody>
         <tr class="text-center" th:each="writing, loop : ${paging}" th:if="${writing.isPublished}">
-            <td th:text="${loop.index+1}"></td>
+            <td th:text="${paging.totalElements - (paging.size * paging.number + loop.index)}"></td>
             <td class="text-start">
                 <a th:href="@{|/writing/detail/${writing.id}|}" th:text="${writing.subject}"></a>
                 <span class="text-danger small ms-2"
