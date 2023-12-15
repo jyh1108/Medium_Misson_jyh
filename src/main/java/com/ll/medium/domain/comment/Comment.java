@@ -28,7 +28,4 @@ public class Comment {
 
     private LocalDateTime modifyDate;
 
-//    @ManyToMany
-//    Set<MemberEntity> voter;
-
 }
