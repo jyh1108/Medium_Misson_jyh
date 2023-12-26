@@ -16,6 +16,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
+
     @GetMapping("/join")
     public String join(MemberCreateForm memberCreateForm) {
         return "join_form";
