@@ -29,11 +29,12 @@ public class WritingService {
             throw new DataNotFoundException("question not found");
         }
     }
-    public void create(String subject, String content, MemberEntity member, boolean isPublished) {
+    public void create(String subject, String content, MemberEntity member, boolean isPublished, boolean isPaid) {
         Writing q = new Writing();
         q.setSubject(subject);
         q.setContent(content);
         q.setAuthor(member);
+        q.setPaid(isPaid);
         q.setPublished(isPublished);
         q.setCreateDate(LocalDateTime.now());
         this.writingRepository.save(q);

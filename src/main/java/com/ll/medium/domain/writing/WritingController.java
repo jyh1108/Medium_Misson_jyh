@@ -54,7 +54,11 @@ public class WritingController {
     @GetMapping(value = "/detail/{id}")
     public String detail(Model model, @PathVariable("id") Integer id, CommentForm commentForm) {
         Writing writing = this.writingService.getWriting(id);
+
+        // 유료 멤버십 확인
+        boolean isPaidMember = writing.getAuthor().isPaid();
         model.addAttribute("writing", writing);
+        model.addAttribute("isPaidMember", isPaidMember);
         return "writing_detail";
     }
 
@@ -71,9 +75,18 @@ public class WritingController {
             return "writing_form";
         }
 
-
         MemberEntity memberEntity = this.memberService.getUser(principal.getName());
-        this.writingService.create(writingForm.getSubject(), writingForm.getContent(), memberEntity, writingForm.isPublished());
+
+        // 유료 글인지 확인
+        boolean isPaid = writingForm.isPaid();
+
+        // 유료 글인 경우에만 paid 필드를 true로 설정
+        if (isPaid) {
+            memberEntity.setPaid(true);
+        }
+
+
+        this.writingService.create(writingForm.getSubject(), writingForm.getContent(), memberEntity, writingForm.isPublished(), writingForm.isPaid());
         return "redirect:/writing/list";
     }
 

@@ -17,6 +17,7 @@ public class WritingForm {
 
     private boolean isPublished = false;
 
+    private boolean paid = false;
 
 }
 

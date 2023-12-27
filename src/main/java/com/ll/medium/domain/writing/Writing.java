@@ -33,6 +33,8 @@ public class Writing {
     @Column
     private boolean isPublished = false;
 
+    @Column
+    private boolean paid = false;
 
 }
 
