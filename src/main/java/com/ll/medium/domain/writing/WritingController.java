@@ -100,7 +100,7 @@ public class WritingController {
         if (!writing.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
-        this.writingService.modify(writing, writingForm.getSubject(), writingForm.getContent());
+        this.writingService.modify(writing, writingForm.getSubject(), writingForm.getContent(), writingForm.isPublished());
         return String.format("redirect:/writing/detail/%s", id);
     }
 

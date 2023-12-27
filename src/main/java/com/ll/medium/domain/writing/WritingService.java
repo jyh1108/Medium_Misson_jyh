@@ -49,9 +49,10 @@ public class WritingService {
     public void delete(Writing writing) {
         this.writingRepository.delete(writing);
     }
-    public void modify(Writing writing, String subject, String content) {
+    public void modify(Writing writing, String subject, String content, boolean isPublished) {
         writing.setSubject(subject);
         writing.setContent(content);
+        writing.setPublished(isPublished);
         writing.setModifyDate(LocalDateTime.now());
         this.writingRepository.save(writing);
     }
