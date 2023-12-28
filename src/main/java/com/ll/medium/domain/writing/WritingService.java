@@ -22,6 +22,7 @@ public class WritingService {
     private final MemberService memberService;
 
     public Writing getWriting(Integer id) {
+
         Optional<Writing> writing = this.writingRepository.findById(id);
         if (writing.isPresent()) {
             return writing.get();

@@ -52,13 +52,31 @@ public class WritingController {
     }
 
     @GetMapping(value = "/detail/{id}")
-    public String detail(Model model, @PathVariable("id") Integer id, CommentForm commentForm) {
+    public String detail(Model model, @PathVariable("id") Integer id, Principal principal, CommentForm commentForm) {
         Writing writing = this.writingService.getWriting(id);
-
-        // 유료 멤버십 확인
-        boolean isPaidMember = writing.getAuthor().isPaid();
         model.addAttribute("writing", writing);
-        model.addAttribute("isPaidMember", isPaidMember);
+
+        if (principal != null) {
+            String username = principal.getName();
+            MemberEntity loggedInUser = memberService.getUser(username);
+            boolean isPaid = loggedInUser.isPaid();
+            model.addAttribute("loggedInUserPaid", isPaid);
+
+            boolean isWritingPaid = writing.isPaid();
+            if (isWritingPaid && !isPaid) {
+                return "writing_noPaid"; // 사용자가 유료 글에 접근하지 못하는 경우 다른 뷰로 리다이렉트
+            }
+        } else {
+            boolean isWritingPaid = writing.isPaid();
+            if (isWritingPaid) {
+                return "writing_noPaid"; // 로그인하지 않은 사용자가 유료 글에 접근하는 경우 다른 뷰로 리다이렉트
+            }
+        }
+
+        // writing의 paid 값을 가져와 비교
+        boolean isWritingPaid = writing.isPaid();
+        model.addAttribute("isWritingPaid", isWritingPaid);
+
         return "writing_detail";
     }
 
