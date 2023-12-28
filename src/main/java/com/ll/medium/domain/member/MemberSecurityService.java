@@ -23,7 +23,7 @@ public class MemberSecurityService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<MemberEntity> _member = this.userRepository.findByusername(username);
         if (_member.isEmpty()) {
-            throw new UsernameNotFoundException("사용자를 찾을수 없습니다.");
+            throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
         }
         MemberEntity member = _member.get();
         List<GrantedAuthority> authorities = new ArrayList<>();
@@ -31,6 +31,9 @@ public class MemberSecurityService implements UserDetailsService {
             authorities.add(new SimpleGrantedAuthority(MemberRole.ADMIN.getValue()));
         } else {
             authorities.add(new SimpleGrantedAuthority(MemberRole.USER.getValue()));
+            if (member.isPaid()) {
+                authorities.add(new SimpleGrantedAuthority(MemberRole.PAID.getValue()));
+            }
         }
         return new User(member.getUsername(), member.getPassword(), authorities);
     }

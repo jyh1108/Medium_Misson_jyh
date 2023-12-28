@@ -22,6 +22,7 @@ public class WritingService {
     private final MemberService memberService;
 
     public Writing getWriting(Integer id) {
+
         Optional<Writing> writing = this.writingRepository.findById(id);
         if (writing.isPresent()) {
             return writing.get();
@@ -29,11 +30,12 @@ public class WritingService {
             throw new DataNotFoundException("question not found");
         }
     }
-    public void create(String subject, String content, MemberEntity member, boolean isPublished) {
+    public void create(String subject, String content, MemberEntity member, boolean isPublished, boolean isPaid) {
         Writing q = new Writing();
         q.setSubject(subject);
         q.setContent(content);
         q.setAuthor(member);
+        q.setPaid(isPaid);
         q.setPublished(isPublished);
         q.setCreateDate(LocalDateTime.now());
         this.writingRepository.save(q);
@@ -49,9 +51,10 @@ public class WritingService {
     public void delete(Writing writing) {
         this.writingRepository.delete(writing);
     }
-    public void modify(Writing writing, String subject, String content) {
+    public void modify(Writing writing, String subject, String content, boolean isPublished) {
         writing.setSubject(subject);
         writing.setContent(content);
+        writing.setPublished(isPublished);
         writing.setModifyDate(LocalDateTime.now());
         this.writingRepository.save(writing);
     }
