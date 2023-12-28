@@ -64,14 +64,22 @@ public class WritingController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
-    public String writingCreate(WritingForm writingForm) {
+    public String writingCreate(WritingForm writingForm, Model model, Principal principal) {
+        String username = principal.getName(); // 현재 로그인한 사용자의 이름을 얻음
+        MemberEntity loggedInUser = memberService.getUser(username); // 사용자 이름으로 사용자 객체를 가져옴
+        boolean isPaid = loggedInUser.isPaid(); // paid 필드 값을 얻음
+        model.addAttribute("loggedInUserPaid", isPaid); // 모델에 로그인한 사용자의 paid 값을 추가
         return "writing_form";
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public String writingCreate(@Valid WritingForm writingForm, BindingResult bindingResult, Principal principal) {
+    public String writingCreate(@Valid WritingForm writingForm, BindingResult bindingResult, Principal principal, Model model) {
         if (bindingResult.hasErrors()) {
+            String username = principal.getName();
+            MemberEntity loggedInUser = memberService.getUser(username);
+            boolean isPaid = loggedInUser.isPaid(); // paid 필드 값을 얻음
+            model.addAttribute("loggedInUserPaid", isPaid); // 모델에 로그인한 사용자의 paid 값을 추가
             return "writing_form";
         }
 
@@ -85,18 +93,23 @@ public class WritingController {
             memberEntity.setPaid(true);
         }
 
-
         this.writingService.create(writingForm.getSubject(), writingForm.getContent(), memberEntity, writingForm.isPublished(), writingForm.isPaid());
         return "redirect:/writing/list";
     }
 
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
-    public String writingModify(WritingForm writingForm, @PathVariable("id") Integer id, Principal principal) {
+    public String writingModify(WritingForm writingForm, @PathVariable("id") Integer id, Principal principal,Model model) {
         Writing writing = this.writingService.getWriting(id);
         if(!writing.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
+        String username = principal.getName();
+        MemberEntity loggedInUser = memberService.getUser(username);
+        boolean isPaid = loggedInUser.isPaid(); // paid 필드 값을 얻음
+        model.addAttribute("loggedInUserPaid", isPaid);
+
         writingForm.setSubject(writing.getSubject());
         writingForm.setContent(writing.getContent());
         return "writing_form";
@@ -104,9 +117,13 @@ public class WritingController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
-    public String writingModify(@Valid WritingForm writingForm, BindingResult bindingResult,
+    public String writingModify(@Valid WritingForm writingForm, BindingResult bindingResult,Model model,
                                  Principal principal, @PathVariable("id") Integer id) {
         if (bindingResult.hasErrors()) {
+            String username = principal.getName();
+            MemberEntity loggedInUser = memberService.getUser(username);
+            boolean isPaid = loggedInUser.isPaid(); // paid 필드 값을 얻음
+            model.addAttribute("loggedInUserPaid", isPaid);
             return "writing_form";
         }
         Writing writing = this.writingService.getWriting(id);
